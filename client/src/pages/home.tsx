@@ -1,12 +1,16 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Sparkles } from "lucide-react";
-import type { Product } from "@shared/schema";
+import { Sparkles, User as UserIcon } from "lucide-react";
+import type { Product, User } from "@shared/schema";
+import { AuthModal } from "@/components/auth-modal";
+import { Button } from "@/components/ui/button";
 
 type Category = "Todas" | "Beleza" | "Tech" | "Casa" | "Moda" | "Pets";
 
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<Category>("Todas");
+  const [user, setUser] = useState<User | null>(null);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
 
   const { data: products = [], isLoading } = useQuery<Product[]>({
     queryKey: ["/api/products"],
@@ -38,15 +42,42 @@ export default function Home() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="bg-gradient-to-br from-brand-pink/10 via-brand-orange/10 to-brand-blue/10 border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-12 text-center">
-          <div className="flex items-center justify-center gap-3 mb-3">
-            <Sparkles className="w-8 h-8 text-brand-pink" />
-            <h1 className="text-4xl sm:text-5xl font-bold text-foreground">
-              Achadinhos do Dia
-            </h1>
-            <Sparkles className="w-8 h-8 text-brand-blue" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-12">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex-1"></div>
+            <div className="flex items-center gap-3">
+              <Sparkles className="w-8 h-8 text-brand-pink" />
+              <h1 className="text-4xl sm:text-5xl font-bold text-foreground">
+                Achadinhos do Dia
+              </h1>
+              <Sparkles className="w-8 h-8 text-brand-blue" />
+            </div>
+            <div className="flex-1 flex justify-end">
+              {user ? (
+                <div className="flex items-center gap-3">
+                  <span className="text-sm font-medium text-foreground">
+                    Olá, {user.name}!
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setUser(null)}
+                  >
+                    Sair
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  onClick={() => setAuthModalOpen(true)}
+                  className="bg-brand-pink hover:bg-brand-pink/90 text-white"
+                >
+                  <UserIcon className="w-4 h-4 mr-2" />
+                  Entrar
+                </Button>
+              )}
+            </div>
           </div>
-          <p className="text-lg sm:text-xl text-muted-foreground font-medium">
+          <p className="text-lg sm:text-xl text-muted-foreground font-medium text-center">
             Garimpei pra você — só o que vale a pena!
           </p>
         </div>
@@ -189,6 +220,13 @@ export default function Home() {
           </div>
         )}
       </main>
+
+      {/* Auth Modal */}
+      <AuthModal
+        open={authModalOpen}
+        onOpenChange={setAuthModalOpen}
+        onSuccess={setUser}
+      />
 
       {/* Footer */}
       <footer className="bg-gradient-to-br from-brand-pink/5 via-brand-orange/5 to-brand-blue/5 border-t border-border mt-20">

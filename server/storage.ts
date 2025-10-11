@@ -1,5 +1,5 @@
-import { type Product, type InsertProduct } from "@shared/schema";
-import { randomUUID } from "crypto";
+import { type Product, type User, type InsertUser } from "@shared/schema";
+import { randomUUID, randomBytes, scryptSync } from "crypto";
 
 export interface IStorage {
   getAllProducts(): Promise<Product[]>;
@@ -7,13 +7,16 @@ export interface IStorage {
   getFeaturedProduct(): Promise<Product | undefined>;
   getProductsByCategory(categoria: string): Promise<Product[]>;
   createProduct(product: InsertProduct): Promise<Product>;
+  createUser(userData: InsertUser): Promise<User>;
+  getUserByEmail(email: string): Promise<User | undefined>;
+  verifyUser(email: string, password: string): Promise<User | null>;
 }
 
 export class MemStorage implements IStorage {
-  private products: Map<string, Product>;
+  private products: Product[] = [];
+  private users: User[] = [];
 
   constructor() {
-    this.products = new Map();
     this.initializeProducts();
   }
 
@@ -130,37 +133,74 @@ export class MemStorage implements IStorage {
     ];
 
     sampleProducts.forEach((product) => {
-      this.products.set(product.id, product);
+      this.products.push(product);
     });
   }
 
   async getAllProducts(): Promise<Product[]> {
-    return Array.from(this.products.values());
+    return this.products;
   }
 
   async getProductById(id: string): Promise<Product | undefined> {
-    return this.products.get(id);
+    return this.products.find((p) => p.id === id);
   }
 
   async getFeaturedProduct(): Promise<Product | undefined> {
-    return Array.from(this.products.values()).find(p => p.destaque === 1);
+    return this.products.find(p => p.destaque === 1);
   }
 
   async getProductsByCategory(categoria: string): Promise<Product[]> {
-    return Array.from(this.products.values()).filter(
+    return this.products.filter(
       (product) => product.categoria === categoria,
     );
   }
 
   async createProduct(insertProduct: InsertProduct): Promise<Product> {
     const id = randomUUID();
-    const product: Product = { 
-      ...insertProduct, 
+    const product: Product = {
+      ...insertProduct,
       id,
       destaque: insertProduct.destaque ?? 0
     };
-    this.products.set(id, product);
+    this.products.push(product);
     return product;
+  }
+
+  private hashPassword(password: string): string {
+    const salt = randomBytes(16).toString("hex");
+    const hash = scryptSync(password, salt, 64).toString("hex");
+    return `${salt}:${hash}`;
+  }
+
+  private verifyPassword(password: string, storedHash: string): boolean {
+    const [salt, hash] = storedHash.split(":");
+    const verifyHash = scryptSync(password, salt, 64).toString("hex");
+    return hash === verifyHash;
+  }
+
+  async createUser(userData: InsertUser): Promise<User> {
+    const id = randomBytes(16).toString("hex");
+    const hashedPassword = this.hashPassword(userData.password);
+    const user: User = {
+      id,
+      name: userData.name,
+      email: userData.email,
+      password: hashedPassword,
+      createdAt: new Date().toISOString(),
+    };
+    this.users.push(user);
+    return user;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    return this.users.find((u) => u.email === email);
+  }
+
+  async verifyUser(email: string, password: string): Promise<User | null> {
+    const user = await this.getUserByEmail(email);
+    if (!user) return null;
+    const isValid = this.verifyPassword(password, user.password);
+    return isValid ? user : null;
   }
 }
 
