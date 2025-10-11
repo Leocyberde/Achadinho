@@ -21,6 +21,7 @@ export class MemStorage implements IStorage {
 
   constructor() {
     this.initializeProducts();
+    this.initializeAdminUser(); // Call to initialize admin user
   }
 
   private initializeProducts() {
@@ -217,6 +218,28 @@ export class MemStorage implements IStorage {
 
   async deleteProduct(id: string): Promise<void> {
     this.products = this.products.filter(p => p.id !== id);
+  }
+
+  private async initializeAdminUser() {
+    // Criar usuário admin padrão se não existir
+    const adminEmail = "leolulu842@gmail.com";
+    const existingAdmin = await this.getUserByEmail(adminEmail);
+
+    if (!existingAdmin) {
+      const hashedPassword = this.hashPassword("123456");
+      const adminUser: User = {
+        id: "admin-001",
+        name: "Administrador",
+        email: adminEmail,
+        password: hashedPassword,
+        isAdmin: 1,
+        createdAt: new Date().toISOString(),
+      };
+      this.users.push(adminUser);
+      console.log("✅ Usuário admin criado:");
+      console.log("   Email: leolulu842@gmail.com");
+      console.log("   Senha: 123456");
+    }
   }
 }
 
