@@ -21,11 +21,6 @@ export default function Home() {
     setUser(null);
   };
 
-  // Se o usuário for admin, mostrar painel
-  if (user?.isAdmin === 1) {
-    return <Admin user={user} onLogout={handleLogout} />;
-  }
-
   const { data: products = [], isLoading } = useQuery<Product[]>({
     queryKey: ["/api/products"],
   });
@@ -37,6 +32,11 @@ export default function Home() {
   const filteredProducts = selectedCategory === "Todas" 
     ? products.filter(p => p.destaque === 0)
     : products.filter(p => p.categoria === selectedCategory && p.destaque === 0);
+
+  // Se o usuário for admin, mostrar painel
+  if (user?.isAdmin === 1) {
+    return <Admin user={user} onLogout={handleLogout} />;
+  }
 
   const categories: { name: Category; emoji: string }[] = [
     { name: "Todas", emoji: "✨" },
