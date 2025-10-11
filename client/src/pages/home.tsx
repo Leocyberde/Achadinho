@@ -150,6 +150,11 @@ export default function Home() {
                   <h3 className="text-2xl sm:text-3xl font-bold text-foreground" data-testid="text-featured-name">
                     {featuredProduct.nome}
                   </h3>
+                  {featuredProduct.descricao && (
+                    <p className="text-muted-foreground text-base">
+                      {featuredProduct.descricao}
+                    </p>
+                  )}
                   <p className="text-4xl font-bold text-brand-pink" data-testid="text-featured-price">
                     {featuredProduct.preco}
                   </p>
@@ -212,6 +217,11 @@ export default function Home() {
                   <h3 className="font-semibold text-foreground line-clamp-2 min-h-[2.5rem]" data-testid={`text-name-${product.id}`}>
                     {product.nome}
                   </h3>
+                  {product.descricao && (
+                    <p className="text-sm text-muted-foreground line-clamp-2">
+                      {product.descricao}
+                    </p>
+                  )}
                   <p className="text-2xl font-bold text-brand-pink" data-testid={`text-price-${product.id}`}>
                     {product.preco}
                   </p>

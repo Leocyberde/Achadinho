@@ -6,6 +6,7 @@ export const products = pgTable("products", {
   id: varchar("id").primaryKey(),
   categoria: text("categoria").notNull(),
   nome: text("nome").notNull(),
+  descricao: text("descricao"),
   preco: text("preco").notNull(),
   imagem: text("imagem").notNull(),
   link: text("link").notNull(),

@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 
 type AdminProps = {
@@ -23,6 +24,7 @@ export default function Admin({ user, onLogout }: AdminProps) {
   const [formData, setFormData] = useState({
     categoria: "",
     nome: "",
+    descricao: "",
     preco: "",
     imagem: "",
     link: "",
@@ -86,6 +88,7 @@ export default function Admin({ user, onLogout }: AdminProps) {
     setFormData({
       categoria: "",
       nome: "",
+      descricao: "",
       preco: "",
       imagem: "",
       link: "",
@@ -109,6 +112,7 @@ export default function Admin({ user, onLogout }: AdminProps) {
     setFormData({
       categoria: product.categoria,
       nome: product.nome,
+      descricao: product.descricao || "",
       preco: product.preco,
       imagem: product.imagem,
       link: product.link,
@@ -242,6 +246,15 @@ export default function Admin({ user, onLogout }: AdminProps) {
                   </SelectContent>
                 </Select>
               </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Descrição</Label>
+              <Textarea
+                value={formData.descricao}
+                onChange={(e) => setFormData({ ...formData, descricao: e.target.value })}
+                placeholder="Descrição do produto"
+                rows={3}
+              />
             </div>
             <div className="space-y-2">
               <Label>Preço</Label>
