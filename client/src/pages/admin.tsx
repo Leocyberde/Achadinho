@@ -217,12 +217,31 @@ export default function Admin({ user, onLogout }: AdminProps) {
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Beleza">Beleza</SelectItem>
-                    <SelectItem value="Tech">Tech</SelectItem>
-                    <SelectItem value="Casa">Casa</SelectItem>
+                  <SelectContent className="max-h-[300px]">
+                    <SelectItem value="Veículos">Veículos</SelectItem>
+                    <SelectItem value="Imóveis">Imóveis</SelectItem>
+                    <SelectItem value="Eletrônicos e Celulares">Eletrônicos e Celulares</SelectItem>
+                    <SelectItem value="Casa e Eletrodomésticos">Casa e Eletrodomésticos</SelectItem>
+                    <SelectItem value="Esportes e Fitness">Esportes e Fitness</SelectItem>
+                    <SelectItem value="Ferramentas">Ferramentas</SelectItem>
                     <SelectItem value="Moda">Moda</SelectItem>
-                    <SelectItem value="Pets">Pets</SelectItem>
+                    <SelectItem value="Beleza e Cuidado Pessoal">Beleza e Cuidado Pessoal</SelectItem>
+                    <SelectItem value="Saúde">Saúde</SelectItem>
+                    <SelectItem value="Bebês">Bebês</SelectItem>
+                    <SelectItem value="Brinquedos e Hobbies">Brinquedos e Hobbies</SelectItem>
+                    <SelectItem value="Música e Filmes">Música e Filmes</SelectItem>
+                    <SelectItem value="Livros">Livros</SelectItem>
+                    <SelectItem value="Papelaria">Papelaria</SelectItem>
+                    <SelectItem value="Games">Games</SelectItem>
+                    <SelectItem value="Informática">Informática</SelectItem>
+                    <SelectItem value="Agro">Agro</SelectItem>
+                    <SelectItem value="Indústria e Comércio">Indústria e Comércio</SelectItem>
+                    <SelectItem value="Alimentos e Bebidas">Alimentos e Bebidas</SelectItem>
+                    <SelectItem value="Serviços">Serviços</SelectItem>
+                    <SelectItem value="Câmeras e Acessórios">Câmeras e Acessórios</SelectItem>
+                    <SelectItem value="Pet Shop">Pet Shop</SelectItem>
+                    <SelectItem value="Antiguidades e Coleções">Antiguidades e Coleções</SelectItem>
+                    <SelectItem value="Outras Categorias">Outras Categorias</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
