@@ -6,7 +6,7 @@ import { AuthModal } from "@/components/auth-modal";
 import { Button } from "@/components/ui/button";
 import Admin from "./admin";
 
-type Category = "Todas" | "Beleza" | "Tech" | "Casa" | "Moda" | "Pets";
+type Category = "Todas" | "Imóveis" | "Eletrônicos e Celulares" | "Casa e Eletrodomésticos" | "Esportes e Fitness" | "Ferramentas" | "Moda" | "Beleza e Cuidado Pessoal" | "Saúde" | "Bebês" | "Brinquedos e Hobbies" | "Papelaria" | "Games" | "Informática" | "Agro" | "Indústria e Comércio" | "Alimentos e Bebidas" | "Serviços" | "Câmeras e Acessórios" | "Pet Shop" | "Antiguidades e Coleções" | "Outras Categorias";
 
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<Category>("Todas");
@@ -40,11 +40,27 @@ export default function Home() {
 
   const categories: { name: Category; emoji: string }[] = [
     { name: "Todas", emoji: "✨" },
-    { name: "Beleza", emoji: "💄" },
-    { name: "Tech", emoji: "⚙️" },
-    { name: "Casa", emoji: "🏠" },
+    { name: "Imóveis", emoji: "🏢" },
+    { name: "Eletrônicos e Celulares", emoji: "📱" },
+    { name: "Casa e Eletrodomésticos", emoji: "🏠" },
+    { name: "Esportes e Fitness", emoji: "⚽" },
+    { name: "Ferramentas", emoji: "🔧" },
     { name: "Moda", emoji: "👗" },
-    { name: "Pets", emoji: "🐾" },
+    { name: "Beleza e Cuidado Pessoal", emoji: "💄" },
+    { name: "Saúde", emoji: "💊" },
+    { name: "Bebês", emoji: "👶" },
+    { name: "Brinquedos e Hobbies", emoji: "🎮" },
+    { name: "Papelaria", emoji: "📝" },
+    { name: "Games", emoji: "🎯" },
+    { name: "Informática", emoji: "💻" },
+    { name: "Agro", emoji: "🌾" },
+    { name: "Indústria e Comércio", emoji: "🏭" },
+    { name: "Alimentos e Bebidas", emoji: "🍔" },
+    { name: "Serviços", emoji: "🛠️" },
+    { name: "Câmeras e Acessórios", emoji: "📷" },
+    { name: "Pet Shop", emoji: "🐾" },
+    { name: "Antiguidades e Coleções", emoji: "🏺" },
+    { name: "Outras Categorias", emoji: "📦" },
   ];
 
   const getButtonColor = (index: number) => {
@@ -100,7 +116,7 @@ export default function Home() {
       {/* Category Filter */}
       <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 py-4">
-          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+          <div className="category-scroll">
             {categories.map((category) => (
               <button
                 key={category.name}
