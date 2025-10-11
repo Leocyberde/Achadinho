@@ -80,6 +80,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Rotas de administração
+  app.post("/api/admin/products", async (req, res) => {
+    try {
+      const product = await storage.createProduct(req.body);
+      res.json(product);
+    } catch (error) {
+      res.status(500).json({ error: "Erro ao criar produto" });
+    }
+  });
+
+  app.put("/api/admin/products/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const product = await storage.updateProduct(id, req.body);
+      if (!product) {
+        return res.status(404).json({ error: "Produto não encontrado" });
+      }
+      res.json(product);
+    } catch (error) {
+      res.status(500).json({ error: "Erro ao atualizar produto" });
+    }
+  });
+
+  app.delete("/api/admin/products/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      await storage.deleteProduct(id);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Erro ao deletar produto" });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;

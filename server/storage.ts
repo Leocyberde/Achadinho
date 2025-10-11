@@ -1,5 +1,6 @@
-import { type Product, type User, type InsertUser } from "@shared/schema";
+import { type Product, type User, type InsertProduct } from "@shared/schema";
 import { randomUUID, randomBytes, scryptSync } from "crypto";
+import * as crypto from 'crypto'; // Import crypto module
 
 export interface IStorage {
   getAllProducts(): Promise<Product[]>;
@@ -10,6 +11,8 @@ export interface IStorage {
   createUser(userData: InsertUser): Promise<User>;
   getUserByEmail(email: string): Promise<User | undefined>;
   verifyUser(email: string, password: string): Promise<User | null>;
+  updateProduct(id: string, updates: Partial<InsertProduct>): Promise<Product | null>;
+  deleteProduct(id: string): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
@@ -201,6 +204,19 @@ export class MemStorage implements IStorage {
     if (!user) return null;
     const isValid = this.verifyPassword(password, user.password);
     return isValid ? user : null;
+  }
+
+  async updateProduct(id: string, updates: Partial<InsertProduct>): Promise<Product | null> {
+    const productIndex = this.products.findIndex(p => p.id === id);
+    if (productIndex === -1) return null;
+
+    const updatedProduct = { ...this.products[productIndex], ...updates };
+    this.products[productIndex] = updatedProduct;
+    return updatedProduct;
+  }
+
+  async deleteProduct(id: string): Promise<void> {
+    this.products = this.products.filter(p => p.id !== id);
   }
 }
 

@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Sparkles, User as UserIcon } from "lucide-react";
 import type { Product, User } from "@shared/schema";
 import { AuthModal } from "@/components/auth-modal";
 import { Button } from "@/components/ui/button";
+import Admin from "./admin";
 
 type Category = "Todas" | "Beleza" | "Tech" | "Casa" | "Moda" | "Pets";
 
@@ -11,6 +12,19 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<Category>("Todas");
   const [user, setUser] = useState<User | null>(null);
   const [authModalOpen, setAuthModalOpen] = useState(false);
+
+  const handleUserLogin = (loggedUser: User) => {
+    setUser(loggedUser);
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+  };
+
+  // Se o usuário for admin, mostrar painel
+  if (user?.isAdmin === 1) {
+    return <Admin user={user} onLogout={handleLogout} />;
+  }
 
   const { data: products = [], isLoading } = useQuery<Product[]>({
     queryKey: ["/api/products"],
@@ -225,7 +239,7 @@ export default function Home() {
       <AuthModal
         open={authModalOpen}
         onOpenChange={setAuthModalOpen}
-        onSuccess={setUser}
+        onSuccess={handleUserLogin}
       />
 
       {/* Footer */}

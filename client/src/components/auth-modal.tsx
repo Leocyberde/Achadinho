@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -29,7 +28,7 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
 
     try {
       const endpoint = mode === "login" ? "/api/auth/login" : "/api/auth/register";
-      const body = mode === "login" 
+      const body = mode === "login"
         ? { email: formData.email, password: formData.password }
         : formData;
 
@@ -113,8 +112,8 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
             />
           </div>
 
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             className="w-full bg-brand-pink hover:bg-brand-pink/90"
             disabled={loading}
           >
