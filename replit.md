@@ -3,6 +3,12 @@
 ## Visão Geral
 Site de catálogo de produtos com links de afiliado para Shopee, Mercado Livre e Amazon. O design é colorido e divertido, focado em ofertas garimpadas.
 
+## Mudanças Recentes (11 Out 2025)
+- **Simplificação do sistema de links**: Removido campo "link" do produto, mantendo apenas "affiliateLink" como campo obrigatório
+- Painel admin atualizado com formulário simplificado contendo apenas "Link de Afiliado"
+- Todos os botões "Ver Oferta" redirecionam diretamente para o link de afiliado cadastrado
+- **Funcionalidade "Ver mais"**: Adicionado botão para expandir/colapsar descrição dos produtos (aparece quando descrição > 80 caracteres nos produtos e > 100 caracteres no produto em destaque)
+
 ## Decisões de Design
 
 ### Emojis
@@ -36,9 +42,14 @@ Esta é uma decisão consciente que prioriza os requisitos explícitos do usuár
   - GET `/api/products/featured` - Produto em destaque
   - GET `/api/products/category/:categoria` - Produtos por categoria
   - GET `/api/products/:id` - Produto específico
+  - POST `/api/admin/products` - Criar produto (admin)
+  - PUT `/api/admin/products/:id` - Atualizar produto (admin)
+  - DELETE `/api/admin/products/:id` - Deletar produto (admin)
 
 ### Shared (`shared/`)
 - `schema.ts` - Schema de produtos com tipos TypeScript
+  - Produto: id, categoria, nome, descricao, preco, imagem, **affiliateLink** (obrigatório), destaque
+  - User: id, name, email, password, isAdmin, createdAt
 
 ## Funcionalidades
 1. ✅ Cabeçalho com logo e slogan

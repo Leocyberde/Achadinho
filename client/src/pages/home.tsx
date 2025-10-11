@@ -4,14 +4,16 @@ import { Sparkles, User as UserIcon } from "lucide-react";
 import type { Product, User } from "@shared/schema";
 import { AuthModal } from "@/components/auth-modal";
 import { Button } from "@/components/ui/button";
+import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import Admin from "./admin";
 
-type Category = "Todas" | "Imóveis" | "Eletrônicos e Celulares" | "Casa e Eletrodomésticos" | "Esportes e Fitness" | "Ferramentas" | "Moda" | "Beleza e Cuidado Pessoal" | "Saúde" | "Bebês" | "Brinquedos e Hobbies" | "Papelaria" | "Games" | "Informática" | "Agro" | "Indústria e Comércio" | "Alimentos e Bebidas" | "Serviços" | "Câmeras e Acessórios" | "Pet Shop" | "Antiguidades e Coleções" | "Outras Categorias";
+type Category = "Todas" | "Eletrônicos e Celulares" | "Casa e Eletrodomésticos" | "Esportes e Fitness" | "Ferramentas" | "Moda" | "Beleza e Cuidado Pessoal" | "Saúde" | "Bebês" | "Brinquedos e Hobbies" | "Papelaria" | "Games" | "Informática" | "Agro" | "Indústria e Comércio" | "Alimentos e Bebidas" | "Serviços" | "Câmeras e Acessórios" | "Pet Shop" | "Antiguidades e Coleções" | "Outras Categorias";
 
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<Category>("Todas");
   const [user, setUser] = useState<User | null>(null);
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [expandedDescriptions, setExpandedDescriptions] = useState<Set<string>>(new Set());
 
   const handleUserLogin = (loggedUser: User) => {
     setUser(loggedUser);
@@ -40,7 +42,6 @@ export default function Home() {
 
   const categories: { name: Category; emoji: string }[] = [
     { name: "Todas", emoji: "✨" },
-    { name: "Imóveis", emoji: "🏢" },
     { name: "Eletrônicos e Celulares", emoji: "📱" },
     { name: "Casa e Eletrodomésticos", emoji: "🏠" },
     { name: "Esportes e Fitness", emoji: "⚽" },
@@ -66,6 +67,36 @@ export default function Home() {
   const getButtonColor = (index: number) => {
     const colors = ["bg-brand-orange", "bg-brand-blue", "bg-brand-pink"];
     return colors[index % colors.length];
+  };
+
+  const toggleDescription = (productId: string) => {
+    setExpandedDescriptions(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(productId)) {
+        newSet.delete(productId);
+      } else {
+        newSet.add(productId);
+      }
+      return newSet;
+    });
+  };
+
+  const handleProductClick = async (productId: string, productName: string) => {
+    if (user) {
+      try {
+        await fetch("/api/product-click", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: user.id,
+            productId,
+            productName,
+          }),
+        });
+      } catch (error) {
+        console.error("Erro ao registrar clique:", error);
+      }
+    }
   };
 
   return (
@@ -152,12 +183,38 @@ export default function Home() {
             <div className="bg-card border border-card-border rounded-2xl p-6 sm:p-8 shadow-lg hover-elevate transition-all duration-300 hover:shadow-xl">
               <div className="grid md:grid-cols-2 gap-8 items-center">
                 <div className="relative aspect-square rounded-xl overflow-hidden bg-muted">
-                  <img
-                    src={featuredProduct.imagem}
-                    alt={featuredProduct.nome}
-                    className="w-full h-full object-cover"
-                    data-testid="img-featured-product"
-                  />
+                  {featuredProduct.imagens ? (
+                    <Carousel className="w-full h-full">
+                      <CarouselContent>
+                        <CarouselItem>
+                          <img
+                            src={featuredProduct.imagem}
+                            alt={featuredProduct.nome}
+                            className="w-full h-full object-cover"
+                            data-testid="img-featured-product"
+                          />
+                        </CarouselItem>
+                        {featuredProduct.imagens.split(',').filter(img => img.trim()).map((img, index) => (
+                          <CarouselItem key={index}>
+                            <img
+                              src={img}
+                              alt={`${featuredProduct.nome} - ${index + 2}`}
+                              className="w-full h-full object-cover"
+                            />
+                          </CarouselItem>
+                        ))}
+                      </CarouselContent>
+                      <CarouselPrevious className="left-2" />
+                      <CarouselNext className="right-2" />
+                    </Carousel>
+                  ) : (
+                    <img
+                      src={featuredProduct.imagem}
+                      alt={featuredProduct.nome}
+                      className="w-full h-full object-cover"
+                      data-testid="img-featured-product"
+                    />
+                  )}
                 </div>
                 <div className="space-y-4">
                   <span className="inline-block px-3 py-1 text-xs font-semibold bg-brand-orange/20 text-brand-orange rounded-full">
@@ -167,22 +224,44 @@ export default function Home() {
                     {featuredProduct.nome}
                   </h3>
                   {featuredProduct.descricao && (
-                    <p className="text-muted-foreground text-base">
-                      {featuredProduct.descricao}
-                    </p>
+                    <div className="space-y-2">
+                      <p className={`text-muted-foreground text-base ${expandedDescriptions.has('featured') ? '' : 'line-clamp-3'}`}>
+                        {featuredProduct.descricao}
+                      </p>
+                      {featuredProduct.descricao.length > 100 && (
+                        <button
+                          onClick={() => toggleDescription('featured')}
+                          className="text-sm text-brand-pink hover:text-brand-pink/80 font-medium transition-colors"
+                          data-testid="button-toggle-featured-description"
+                        >
+                          {expandedDescriptions.has('featured') ? 'Ver menos' : 'Ver mais'}
+                        </button>
+                      )}
+                    </div>
                   )}
                   <p className="text-4xl font-bold text-brand-pink" data-testid="text-featured-price">
                     {featuredProduct.preco}
                   </p>
-                  <a
-                    href={featuredProduct.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center w-full sm:w-auto px-8 py-4 bg-brand-pink text-white font-semibold rounded-xl hover-elevate active-elevate-2 transition-all duration-200 shadow-md hover:shadow-lg"
-                    data-testid="button-featured-offer"
-                  >
-                    Ver Oferta 🎁
-                  </a>
+                  {user ? (
+                    <a
+                      href={featuredProduct.affiliateLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => handleProductClick(featuredProduct.id, featuredProduct.nome)}
+                      className="inline-flex items-center justify-center w-full sm:w-auto px-8 py-4 bg-brand-pink text-white font-semibold rounded-xl hover-elevate active-elevate-2 transition-all duration-200 shadow-md hover:shadow-lg"
+                      data-testid="button-featured-offer"
+                    >
+                      Ver Oferta 🎁
+                    </a>
+                  ) : (
+                    <button
+                      onClick={() => setAuthModalOpen(true)}
+                      className="inline-flex items-center justify-center w-full sm:w-auto px-8 py-4 bg-brand-pink text-white font-semibold rounded-xl hover-elevate active-elevate-2 transition-all duration-200 shadow-md hover:shadow-lg"
+                      data-testid="button-featured-offer"
+                    >
+                      Ver Oferta 🎁
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -222,38 +301,90 @@ export default function Home() {
                 data-testid={`card-product-${product.id}`}
               >
                 <div className="relative aspect-square rounded-lg overflow-hidden bg-muted mb-4">
-                  <img
-                    src={product.imagem}
-                    alt={product.nome}
-                    className="w-full h-full object-cover"
-                    data-testid={`img-product-${product.id}`}
-                  />
+                  {product.imagens ? (
+                    <Carousel className="w-full h-full">
+                      <CarouselContent>
+                        <CarouselItem>
+                          <img
+                            src={product.imagem}
+                            alt={product.nome}
+                            className="w-full h-full object-cover"
+                            data-testid={`img-product-${product.id}`}
+                          />
+                        </CarouselItem>
+                        {product.imagens.split(',').filter(img => img.trim()).map((img, index) => (
+                          <CarouselItem key={index}>
+                            <img
+                              src={img}
+                              alt={`${product.nome} - ${index + 2}`}
+                              className="w-full h-full object-cover"
+                            />
+                          </CarouselItem>
+                        ))}
+                      </CarouselContent>
+                      <CarouselPrevious className="left-2" />
+                      <CarouselNext className="right-2" />
+                    </Carousel>
+                  ) : (
+                    <img
+                      src={product.imagem}
+                      alt={product.nome}
+                      className="w-full h-full object-cover"
+                      data-testid={`img-product-${product.id}`}
+                    />
+                  )}
                 </div>
                 <div className="space-y-2">
                   <h3 className="font-semibold text-foreground line-clamp-2 min-h-[2.5rem]" data-testid={`text-name-${product.id}`}>
                     {product.nome}
                   </h3>
                   {product.descricao && (
-                    <p className="text-sm text-muted-foreground line-clamp-2">
-                      {product.descricao}
-                    </p>
+                    <div className="space-y-1">
+                      <p className={`text-sm text-muted-foreground ${expandedDescriptions.has(product.id) ? '' : 'line-clamp-2'}`}>
+                        {product.descricao}
+                      </p>
+                      {product.descricao.length > 80 && (
+                        <button
+                          onClick={() => toggleDescription(product.id)}
+                          className="text-xs text-brand-pink hover:text-brand-pink/80 font-medium transition-colors"
+                          data-testid={`button-toggle-description-${product.id}`}
+                        >
+                          {expandedDescriptions.has(product.id) ? 'Ver menos' : 'Ver mais'}
+                        </button>
+                      )}
+                    </div>
                   )}
                   <p className="text-2xl font-bold text-brand-pink" data-testid={`text-price-${product.id}`}>
                     {product.preco}
                   </p>
-                  <a
-                    href={product.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`
-                      block w-full text-center px-4 py-3 text-white font-semibold rounded-lg
-                      hover-elevate active-elevate-2 transition-all duration-200
-                      ${getButtonColor(index)}
-                    `}
-                    data-testid={`button-offer-${product.id}`}
-                  >
-                    Ver Oferta
-                  </a>
+                  {user ? (
+                    <a
+                      href={product.affiliateLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => handleProductClick(product.id, product.nome)}
+                      className={`
+                        block w-full text-center px-4 py-3 text-white font-semibold rounded-lg
+                        hover-elevate active-elevate-2 transition-all duration-200
+                        ${getButtonColor(index)}
+                      `}
+                      data-testid={`button-offer-${product.id}`}
+                    >
+                      Ver Oferta
+                    </a>
+                  ) : (
+                    <button
+                      onClick={() => setAuthModalOpen(true)}
+                      className={`
+                        block w-full text-center px-4 py-3 text-white font-semibold rounded-lg
+                        hover-elevate active-elevate-2 transition-all duration-200
+                        ${getButtonColor(index)}
+                      `}
+                      data-testid={`button-offer-${product.id}`}
+                    >
+                      Ver Oferta
+                    </button>
+                  )}
                 </div>
               </div>
             ))}

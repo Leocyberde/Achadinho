@@ -47,16 +47,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/admin/users", async (_req, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      const usersWithoutPassword = users.map(({ password: _, ...user }) => user);
+      res.json(usersWithoutPassword);
+    } catch (error) {
+      res.status(500).json({ error: "Erro ao buscar usuários" });
+    }
+  });
+
+  app.get("/api/admin/user-clicks/:userId", async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const clicks = await storage.getClicksByUserId(userId);
+      res.json(clicks);
+    } catch (error) {
+      res.status(500).json({ error: "Erro ao buscar cliques do usuário" });
+    }
+  });
+
+  app.post("/api/product-click", async (req, res) => {
+    try {
+      const { userId, productId, productName } = req.body;
+      const click = await storage.recordProductClick({ userId, productId, productName });
+      res.json(click);
+    } catch (error) {
+      res.status(500).json({ error: "Erro ao registrar clique" });
+    }
+  });
+
   app.post("/api/auth/register", async (req, res) => {
     try {
-      const { name, email, password } = req.body;
+      const { name, email, phone, password } = req.body;
       
       const existingUser = await storage.getUserByEmail(email);
       if (existingUser) {
         return res.status(400).json({ error: "Email já cadastrado" });
       }
 
-      const user = await storage.createUser({ name, email, password });
+      const user = await storage.createUser({ name, email, phone, password });
       const { password: _, ...userWithoutPassword } = user;
       res.json(userWithoutPassword);
     } catch (error) {

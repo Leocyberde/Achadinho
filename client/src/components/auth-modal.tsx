@@ -19,6 +19,7 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "",
     password: "",
   });
 
@@ -51,7 +52,7 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
 
       onSuccess(data);
       onOpenChange(false);
-      setFormData({ name: "", email: "", password: "" });
+      setFormData({ name: "", email: "", phone: "", password: "" });
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -98,6 +99,20 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
               required
             />
           </div>
+
+          {mode === "register" && (
+            <div className="space-y-2">
+              <Label htmlFor="phone">Telefone</Label>
+              <Input
+                id="phone"
+                type="tel"
+                placeholder="(00) 00000-0000"
+                value={formData.phone}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                required
+              />
+            </div>
+          )}
 
           <div className="space-y-2">
             <Label htmlFor="password">Senha</Label>
