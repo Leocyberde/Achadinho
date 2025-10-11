@@ -218,7 +218,6 @@ export default function Admin({ user, onLogout }: AdminProps) {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="max-h-[300px]">
-                    <SelectItem value="Veículos">Veículos</SelectItem>
                     <SelectItem value="Imóveis">Imóveis</SelectItem>
                     <SelectItem value="Eletrônicos e Celulares">Eletrônicos e Celulares</SelectItem>
                     <SelectItem value="Casa e Eletrodomésticos">Casa e Eletrodomésticos</SelectItem>
@@ -229,8 +228,6 @@ export default function Admin({ user, onLogout }: AdminProps) {
                     <SelectItem value="Saúde">Saúde</SelectItem>
                     <SelectItem value="Bebês">Bebês</SelectItem>
                     <SelectItem value="Brinquedos e Hobbies">Brinquedos e Hobbies</SelectItem>
-                    <SelectItem value="Música e Filmes">Música e Filmes</SelectItem>
-                    <SelectItem value="Livros">Livros</SelectItem>
                     <SelectItem value="Papelaria">Papelaria</SelectItem>
                     <SelectItem value="Games">Games</SelectItem>
                     <SelectItem value="Informática">Informática</SelectItem>
