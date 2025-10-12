@@ -249,4 +249,28 @@
     background: hsl(var(--muted-foreground) / 0.3);
     border-radius: 3px;
   }
+
+  .admin-product-img {
+    width: 120px;
+    height: auto;
+    max-height: 120px;
+    object-fit: contain;
+    display: block;
+  }
+
+  .admin-product-img-cell {
+    padding: 0 !important;
+    vertical-align: top;
+    border-top: 0 !important;
+  }
+
+  .admin-product-img-container {
+    width: 120px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: white;
+  }
 }

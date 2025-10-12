@@ -8,6 +8,7 @@ Site de catálogo de produtos com links de afiliado para Shopee, Mercado Livre e
 - Painel admin atualizado com formulário simplificado contendo apenas "Link de Afiliado"
 - Todos os botões "Ver Oferta" redirecionam diretamente para o link de afiliado cadastrado
 - **Funcionalidade "Ver mais"**: Adicionado botão para expandir/colapsar descrição dos produtos (aparece quando descrição > 80 caracteres nos produtos e > 100 caracteres no produto em destaque)
+- **Sistema de imagens simplificado**: Removido carrossel de imagens - agora cada produto usa apenas 1 foto principal (campo `imagem`). Imagens são exibidas com `object-contain` para mostrar o produto completo sem cortes
 
 ## Decisões de Design
 

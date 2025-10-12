@@ -269,8 +269,10 @@ export default function Admin({ user, onLogout }: AdminProps) {
             <tbody>
               {products.map((product) => (
                 <tr key={product.id} className="border-t border-border">
-                  <td className="px-4 py-3">
-                    <img src={product.imagem} alt={product.nome} className="w-12 h-12 object-cover rounded" />
+                  <td className="admin-product-img-cell">
+                    <div className="admin-product-img-container">
+                      <img src={product.imagem} alt={product.nome} className="admin-product-img rounded" />
+                    </div>
                   </td>
                   <td className="px-4 py-3 text-sm">{product.nome}</td>
                   <td className="px-4 py-3 text-sm">{product.categoria}</td>

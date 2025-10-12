@@ -1,10 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Sparkles, User as UserIcon } from "lucide-react";
+import { Sparkles, User as UserIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Product, User } from "@shared/schema";
 import { AuthModal } from "@/components/auth-modal";
 import { Button } from "@/components/ui/button";
-import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import Admin from "./admin";
 
 type Category = "Todas" | "Eletrônicos e Celulares" | "Casa e Eletrodomésticos" | "Esportes e Fitness" | "Ferramentas" | "Moda" | "Beleza e Cuidado Pessoal" | "Saúde" | "Bebês" | "Brinquedos e Hobbies" | "Papelaria" | "Games" | "Informática" | "Agro" | "Indústria e Comércio" | "Alimentos e Bebidas" | "Serviços" | "Câmeras e Acessórios" | "Pet Shop" | "Antiguidades e Coleções" | "Outras Categorias";
@@ -14,6 +13,9 @@ export default function Home() {
   const [user, setUser] = useState<User | null>(null);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [expandedDescriptions, setExpandedDescriptions] = useState<Set<string>>(new Set());
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+  const categoryScrollRef = useRef<HTMLDivElement>(null);
 
   const handleUserLogin = (loggedUser: User) => {
     setUser(loggedUser);
@@ -22,6 +24,30 @@ export default function Home() {
   const handleLogout = () => {
     setUser(null);
   };
+
+  const checkScroll = () => {
+    if (categoryScrollRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = categoryScrollRef.current;
+      setCanScrollLeft(scrollLeft > 0);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 1);
+    }
+  };
+
+  const scrollCategories = (direction: 'left' | 'right') => {
+    if (categoryScrollRef.current) {
+      const scrollAmount = 200;
+      categoryScrollRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  useEffect(() => {
+    checkScroll();
+    window.addEventListener('resize', checkScroll);
+    return () => window.removeEventListener('resize', checkScroll);
+  }, []);
 
   const { data: products = [], isLoading } = useQuery<Product[]>({
     queryKey: ["/api/products"],
@@ -147,25 +173,49 @@ export default function Home() {
       {/* Category Filter */}
       <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 py-4">
-          <div className="category-scroll">
-            {categories.map((category) => (
+          <div className="relative">
+            {canScrollLeft && (
               <button
-                key={category.name}
-                onClick={() => setSelectedCategory(category.name)}
-                className={`
-                  flex items-center gap-2 px-5 py-2.5 rounded-full font-medium whitespace-nowrap
-                  transition-all duration-200 hover-elevate active-elevate-2
-                  ${selectedCategory === category.name
-                    ? "bg-brand-pink text-white shadow-md"
-                    : "bg-card text-foreground border border-card-border"
-                  }
-                `}
-                data-testid={`button-category-${category.name.toLowerCase()}`}
+                onClick={() => scrollCategories('left')}
+                className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-background/90 backdrop-blur-sm border border-card-border rounded-full p-2 shadow-lg hover:bg-card transition-colors"
+                aria-label="Rolar categorias para a esquerda"
               >
-                <span className="text-lg">{category.emoji}</span>
-                <span>{category.name}</span>
+                <ChevronLeft className="w-5 h-5" />
               </button>
-            ))}
+            )}
+            {canScrollRight && (
+              <button
+                onClick={() => scrollCategories('right')}
+                className="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-background/90 backdrop-blur-sm border border-card-border rounded-full p-2 shadow-lg hover:bg-card transition-colors"
+                aria-label="Rolar categorias para a direita"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            )}
+            <div
+              ref={categoryScrollRef}
+              onScroll={checkScroll}
+              className="category-scroll"
+            >
+              {categories.map((category) => (
+                <button
+                  key={category.name}
+                  onClick={() => setSelectedCategory(category.name)}
+                  className={`
+                    flex items-center gap-2 px-5 py-2.5 rounded-full font-medium whitespace-nowrap
+                    transition-all duration-200 hover-elevate active-elevate-2
+                    ${selectedCategory === category.name
+                      ? "bg-brand-pink text-white shadow-md"
+                      : "bg-card text-foreground border border-card-border"
+                    }
+                  `}
+                  data-testid={`button-category-${category.name.toLowerCase()}`}
+                >
+                  <span className="text-lg">{category.emoji}</span>
+                  <span>{category.name}</span>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -183,38 +233,12 @@ export default function Home() {
             <div className="bg-card border border-card-border rounded-2xl p-6 sm:p-8 shadow-lg hover-elevate transition-all duration-300 hover:shadow-xl">
               <div className="grid md:grid-cols-2 gap-8 items-center">
                 <div className="relative aspect-square rounded-xl overflow-hidden bg-muted">
-                  {featuredProduct.imagens ? (
-                    <Carousel className="w-full h-full">
-                      <CarouselContent>
-                        <CarouselItem>
-                          <img
-                            src={featuredProduct.imagem}
-                            alt={featuredProduct.nome}
-                            className="w-full h-full object-cover"
-                            data-testid="img-featured-product"
-                          />
-                        </CarouselItem>
-                        {featuredProduct.imagens.split(',').filter(img => img.trim()).map((img, index) => (
-                          <CarouselItem key={index}>
-                            <img
-                              src={img}
-                              alt={`${featuredProduct.nome} - ${index + 2}`}
-                              className="w-full h-full object-cover"
-                            />
-                          </CarouselItem>
-                        ))}
-                      </CarouselContent>
-                      <CarouselPrevious className="left-2" />
-                      <CarouselNext className="right-2" />
-                    </Carousel>
-                  ) : (
-                    <img
-                      src={featuredProduct.imagem}
-                      alt={featuredProduct.nome}
-                      className="w-full h-full object-cover"
-                      data-testid="img-featured-product"
-                    />
-                  )}
+                  <img
+                    src={featuredProduct.imagem}
+                    alt={featuredProduct.nome}
+                    className="w-full h-full object-contain"
+                    data-testid="img-featured-product"
+                  />
                 </div>
                 <div className="space-y-4">
                   <span className="inline-block px-3 py-1 text-xs font-semibold bg-brand-orange/20 text-brand-orange rounded-full">
@@ -301,38 +325,12 @@ export default function Home() {
                 data-testid={`card-product-${product.id}`}
               >
                 <div className="relative aspect-square rounded-lg overflow-hidden bg-muted mb-4">
-                  {product.imagens ? (
-                    <Carousel className="w-full h-full">
-                      <CarouselContent>
-                        <CarouselItem>
-                          <img
-                            src={product.imagem}
-                            alt={product.nome}
-                            className="w-full h-full object-cover"
-                            data-testid={`img-product-${product.id}`}
-                          />
-                        </CarouselItem>
-                        {product.imagens.split(',').filter(img => img.trim()).map((img, index) => (
-                          <CarouselItem key={index}>
-                            <img
-                              src={img}
-                              alt={`${product.nome} - ${index + 2}`}
-                              className="w-full h-full object-cover"
-                            />
-                          </CarouselItem>
-                        ))}
-                      </CarouselContent>
-                      <CarouselPrevious className="left-2" />
-                      <CarouselNext className="right-2" />
-                    </Carousel>
-                  ) : (
-                    <img
-                      src={product.imagem}
-                      alt={product.nome}
-                      className="w-full h-full object-cover"
-                      data-testid={`img-product-${product.id}`}
-                    />
-                  )}
+                  <img
+                    src={product.imagem}
+                    alt={product.nome}
+                    className="w-full h-full object-contain"
+                    data-testid={`img-product-${product.id}`}
+                  />
                 </div>
                 <div className="space-y-2">
                   <h3 className="font-semibold text-foreground line-clamp-2 min-h-[2.5rem]" data-testid={`text-name-${product.id}`}>
