@@ -1,0 +1,6 @@
+{
+  "name": "Achadinhos - Loja Local & Painel Admin",
+  "description": "Plataforma completa de e-commerce local Achadinhos com vitrine de produtos, área do cliente, cálculo manual de frete por endereço, checkout integrado ao WhatsApp e painel administrativo.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

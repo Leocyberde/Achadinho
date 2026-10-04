@@ -1,0 +1,35 @@
+<svg viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="256" height="256" rx="56" fill="#7C3AED" />
+  <rect x="8" y="8" width="240" height="240" rx="48" stroke="#09090B" stroke-width="6" />
+  <path d="M96 48V34C96 19.6406 110.327 10 128 10C145.673 10 160 19.6406 160 34V48" stroke="#09090B" stroke-width="10" stroke-linecap="round" />
+  <path d="M96 48V34C96 19.6406 110.327 10 128 10C145.673 10 160 19.6406 160 34V48" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" />
+  <path d="M52 50C52 41.1634 59.1634 34 68 34H188C196.837 34 204 41.1634 204 50L214 132C215.105 141.482 207.689 149.8 198.143 149.8H57.8572C48.311 149.8 40.8951 141.482 42 132L52 50Z" fill="#FFFFFF" stroke="#09090B" stroke-width="6" stroke-linejoin="round" />
+  <circle cx="96" cy="52" r="5" fill="#09090B" />
+  <circle cx="160" cy="52" r="5" fill="#09090B" />
+  <circle cx="102" cy="82" r="16" fill="#FAF5FF" stroke="#7C3AED" stroke-width="6.5" />
+  <circle cx="106" cy="79" r="6.5" fill="#09090B" />
+  <circle cx="108.5" cy="76.5" r="2.2" fill="#FFFFFF" />
+  <circle cx="154" cy="82" r="16" fill="#FAF5FF" stroke="#7C3AED" stroke-width="6.5" />
+  <circle cx="158" cy="79" r="6.5" fill="#09090B" />
+  <circle cx="160.5" cy="76.5" r="2.2" fill="#FFFFFF" />
+  <path d="M92 110C110 128 146 128 164 108" stroke="#7C3AED" stroke-width="7" stroke-linecap="round" />
+  <path d="M154 104L167 106L164 118" stroke="#7C3AED" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="128" y="141" text-anchor="middle" fill="#09090B" font-family="sans-serif" font-weight="900" font-size="15" letter-spacing="1.5">ACHADINHOS</text>
+  <rect x="22" y="162" width="114" height="34" rx="10" fill="#09090B" />
+  <text x="79" y="185" text-anchor="middle" fill="#FFFFFF" font-family="sans-serif" font-weight="900" font-size="17" letter-spacing="1.5">DELIVERY</text>
+  <line x1="26" y1="210" x2="68" y2="210" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" />
+  <line x1="38" y1="224" x2="92" y2="224" stroke="#09090B" stroke-width="4.5" stroke-linecap="round" />
+  <g transform="translate(132, 148)">
+    <rect x="8" y="22" width="26" height="24" rx="5" fill="#FFFFFF" stroke="#09090B" stroke-width="3" />
+    <path d="M15 36C18 40 24 40 27 36" stroke="#7C3AED" stroke-width="2.8" stroke-linecap="round" />
+    <circle cx="48" cy="16" r="12" fill="#FFFFFF" stroke="#09090B" stroke-width="3" />
+    <path d="M50 11H59C60 14 59 18 56 19H50V11Z" fill="#09090B" />
+    <path d="M36 48L42 28L66 34" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M14 48H52L62 56H82L72 30H62" fill="#09090B" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="77" cy="34" r="4" fill="#FFFFFF" />
+    <circle cx="26" cy="64" r="13" fill="#09090B" stroke="#FFFFFF" stroke-width="4" />
+    <circle cx="26" cy="64" r="5" fill="#7C3AED" />
+    <circle cx="76" cy="64" r="13" fill="#09090B" stroke="#FFFFFF" stroke-width="4" />
+    <circle cx="76" cy="64" r="5" fill="#7C3AED" />
+  </g>
+</svg>
